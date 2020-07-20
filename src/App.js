@@ -1,25 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
 
+import "antd/dist/antd.css";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import NotFound404 from "./pages/NotFound404";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import PrivateRoute from "./components/PrivateRoute";
+import useAuth from "./hooks/useAuth";
+import Loading from "./components/Loading"
 function App() {
+  const { isLoggedIn, isLoading } = useAuth();
+  if(isLoading)
+    return <Loading/>
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Switch>
+        <PrivateRoute exact path="/" isLoggedIn={isLoggedIn}>
+          <Home />
+        </PrivateRoute>
+        <Route path="/login">
+          <Login />
+        </Route>
+        <Route>
+          <NotFound404 />
+        </Route>
+      </Switch>
+    </Router>
   );
 }
 
